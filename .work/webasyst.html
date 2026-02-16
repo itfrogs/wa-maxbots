@@ -1,0 +1,160 @@
+<p class="block padded shadowed stripe">
+    <strong>Приложение «Боты Max»</strong> — платформа для создания ботов мессенджера <strong>Max</strong> внутри Webasyst. Само по себе приложение не имеет видимого интерфейса — функциональность добавляется через плагины, каждый из которых является отдельным ботом.
+</p>
+
+<p>
+    Прежде чем начинать работу, необходимо зарегистрировать бота в Max и получить его токен. Для этого найдите в мессенджере бота <a href="https://max.ru/MasterBot" target="_blank">@MasterBot</a>, отправьте команду <strong>/newbot</strong> и следуйте инструкциям.
+</p>
+
+<p>
+    Чтобы боты работали, необходимо задать скрытое поселение для приложения в разделе «Сайт». Рекомендуем использовать сложный URL, например <strong>maxbots4e0214025588cde184591b300784b9d4</strong>, чтобы адрес бота не был известен посторонним.
+</p>
+
+<p>
+    Основой приложения является библиотека <a href="https://packagist.org/packages/bushlanov-dev/max-bot-api-client-php" target="_blank">bushlanov-dev/max-bot-api-client-php</a> — там же можно найти документацию для разработки на английском языке. Официальная документация Max Bot API: <a href="https://dev.max.ru" target="_blank">dev.max.ru</a>.
+</p>
+
+<p>
+    Чтобы использовать API бота в своём плагине, достаточно инициализировать класс в фронт-контроллере:
+</p>
+<p>
+    <strong>$max = new maxbotsApi(BOT_TOKEN);</strong>
+</p>
+<p>
+    После этого становятся доступны все методы, описанные в документации SDK, а также методы совместимости с Telegram-плагинами.
+</p>
+
+<p>
+    Приложение распространяется бесплатно и доступно на GitHub: <a href="https://github.com/itfrogs/wa-maxbots" target="_blank">github.com/itfrogs/wa-maxbots</a>.
+</p>
+
+<blockquote class="wi-columns space-20 align-left">
+    <div class="wi-image">
+        <span class="wi-icon size-52"><i class="fas fa-exclamation-triangle"></i></span>
+    </div>
+    <div class="wi-text middle">
+        <p><strong>Важно:</strong> сайт, на котором работают боты, должен быть доступен по протоколу <strong>HTTPS</strong> из глобальной сети. Минимальная версия PHP: <strong>8.2</strong>.</p>
+    </div>
+</blockquote>
+
+<p>
+    На базе приложения работают готовые плагины: уведомления о заказах и чат с клиентами, авторизация через Max. Каждый плагин — отдельный бот со своими настройками.
+</p>
+
+<h3>Справочник методов maxbotsApi</h3>
+
+<p>
+    Класс <strong>maxbotsApi</strong> наследует <code>BushlanovDev\MaxMessengerBot\Api</code> v1.5.0. Требуется PHP 8.2+.
+</p>
+
+<h4>Отправка сообщений</h4>
+<table class="wi-table">
+    <thead>
+        <tr><th>Метод</th><th>Описание</th><th>Обязательные параметры</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>sendMessage(array $params)</code></td><td>Отправить текстовое сообщение</td><td>chat_id или user_id, text</td></tr>
+        <tr><td><code>sendPhoto(array $params)</code></td><td>Отправить фото (загружается через API)</td><td>chat_id, photo (путь к файлу)</td></tr>
+        <tr><td><code>sendDocument(array $params)</code></td><td>Отправить файл/документ</td><td>chat_id, document (путь к файлу)</td></tr>
+        <tr><td><code>sendAudio(array $params)</code></td><td>Отправить аудио</td><td>chat_id, audio (путь к файлу)</td></tr>
+        <tr><td><code>sendVideo(array $params)</code></td><td>Отправить видео</td><td>chat_id, video (путь к файлу)</td></tr>
+        <tr><td><code>sendVoice(array $params)</code></td><td>Отправить голосовое сообщение</td><td>chat_id, voice (путь к файлу)</td></tr>
+        <tr><td><code>sendAnimation(array $params)</code></td><td>Отправить GIF или видео без звука</td><td>chat_id, animation (путь к файлу)</td></tr>
+        <tr><td><code>sendChatAction(array $params)</code></td><td>Показать действие в чате (набор текста, загрузка…)</td><td>chat_id, action</td></tr>
+    </tbody>
+</table>
+
+<h4>Вебхук</h4>
+<table class="wi-table">
+    <thead>
+        <tr><th>Метод</th><th>Описание</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>setWebhook(array $params)</code></td><td>Подписать бота на вебхук (url — обязательно, HTTPS)</td></tr>
+        <tr><td><code>deleteWebhook(string $url)</code></td><td>Отписаться от вебхука (передать текущий URL)</td></tr>
+        <tr><td><code>getWebhookInfo()</code></td><td>Получить список активных подписок</td></tr>
+        <tr><td><code>getWebhookUpdate()</code></td><td>Получить входящее обновление из тела запроса</td></tr>
+    </tbody>
+</table>
+
+<h4>Получение обновлений</h4>
+<table class="wi-table">
+    <thead>
+        <tr><th>Метод</th><th>Описание</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>getUpdates(?int $limit, ?int $timeout, ?int $marker)</code></td><td>Получить обновления через long polling</td></tr>
+        <tr><td><code>getMe()</code></td><td>Проверить токен, получить информацию о боте</td></tr>
+    </tbody>
+</table>
+
+<h4>Редактирование и удаление сообщений</h4>
+<table class="wi-table">
+    <thead>
+        <tr><th>Метод</th><th>Описание</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>editMessageText(array $params)</code></td><td>Изменить текст отправленного сообщения</td></tr>
+        <tr><td><code>editMessageCaption(array $params)</code></td><td>Изменить подпись к медиасообщению</td></tr>
+        <tr><td><code>editMessage(string $messageId, ...)</code></td><td>Нативный метод: изменить сообщение с вложениями</td></tr>
+        <tr><td><code>deleteMessage(array $params)</code></td><td>Удалить сообщение (message_id)</td></tr>
+    </tbody>
+</table>
+
+<h4>Клавиатуры и callback</h4>
+<table class="wi-table">
+    <thead>
+        <tr><th>Метод</th><th>Описание</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>replyKeyboardMarkup(array $params)</code></td><td>Создать JSON reply-клавиатуры (совместимость с Telegram-плагинами)</td></tr>
+        <tr><td><code>replyKeyboardHide(array $params)</code></td><td>Скрыть reply-клавиатуру (JSON)</td></tr>
+        <tr><td><code>forceReply(array $params)</code></td><td>Принудительный запрос ответа (JSON)</td></tr>
+        <tr><td><code>answerCallbackQuery(array $params)</code></td><td>Ответить на нажатие inline-кнопки</td></tr>
+        <tr><td><code>answerOnCallback(string $callbackId, ...)</code></td><td>Нативный метод ответа на callback с редактированием сообщения</td></tr>
+    </tbody>
+</table>
+
+<h4>Загрузка файлов</h4>
+<table class="wi-table">
+    <thead>
+        <tr><th>Метод</th><th>Описание</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>uploadAttachment(UploadType $type, string $filePath)</code></td><td>Загрузить файл и получить объект вложения (Image, File, Audio, Video)</td></tr>
+        <tr><td><code>uploadFile(string $url, resource $handle, string $name)</code></td><td>Загрузить файл по URL (авто: multipart или resumable &gt; 10 МБ)</td></tr>
+        <tr><td><code>getUploadUrl(UploadType $type)</code></td><td>Получить URL для загрузки файла</td></tr>
+    </tbody>
+</table>
+
+<h4>Чаты и участники</h4>
+<table class="wi-table">
+    <thead>
+        <tr><th>Метод</th><th>Описание</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>getChat(int $chatId)</code></td><td>Информация о чате</td></tr>
+        <tr><td><code>getChats()</code></td><td>Список всех чатов бота</td></tr>
+        <tr><td><code>getMembers(int $chatId)</code></td><td>Список участников чата</td></tr>
+        <tr><td><code>getAdmins(int $chatId)</code></td><td>Список администраторов чата</td></tr>
+        <tr><td><code>leaveChat(int $chatId)</code></td><td>Покинуть чат</td></tr>
+        <tr><td><code>pinMessage(int $chatId, string $messageId)</code></td><td>Закрепить сообщение</td></tr>
+        <tr><td><code>unpinMessage(int $chatId)</code></td><td>Открепить сообщение</td></tr>
+    </tbody>
+</table>
+
+<h4>Низкоуровневые методы</h4>
+<table class="wi-table">
+    <thead>
+        <tr><th>Метод</th><th>Описание</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>maxPost($endpoint, $body, $query)</code></td><td>Прямой POST-запрос к Max Bot API</td></tr>
+        <tr><td><code>maxGet($endpoint, $query)</code></td><td>Прямой GET-запрос к Max Bot API</td></tr>
+        <tr><td><code>request(string $method, string $uri, array $query, array $body)</code></td><td>Базовый HTTP-запрос к API</td></tr>
+    </tbody>
+</table>
+
+<p>
+    Полная документация: <a href="https://dev.max.ru" target="_blank">dev.max.ru</a> и <a href="https://packagist.org/packages/bushlanov-dev/max-bot-api-client-php" target="_blank">packagist.org</a>.
+</p>

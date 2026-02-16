@@ -1,0 +1,78 @@
+{
+    "name": "bushlanov-dev/max-bot-api-client-php",
+    "description": "Max Bot API Client library",
+    "keywords": [
+        "max messenger",
+        "bot",
+        "max",
+        "api",
+        "max bot",
+        "laravel",
+        "laravel max bot"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aleksandr Bushlanov",
+            "email": "alex@bushlanov.dev",
+            "homepage": "https://bushlanov.dev",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.3",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^6.5.8||^7.0",
+        "guzzlehttp/psr7": "^1.8||^2.0",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.0||^2.0",
+        "psr/log": "^3.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.77",
+        "bushlanov-dev/php-coverage-badger": "^2.1",
+        "laravel/framework": "^11.0",
+        "mikey179/vfsstream": "^1.6",
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^9.0",
+        "php-mock/php-mock-phpunit": "^2.13",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^12.0",
+        "roave/security-advisories": "dev-latest"
+    },
+    "autoload": {
+        "psr-4": {
+            "BushlanovDev\\MaxMessengerBot\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BushlanovDev\\MaxMessengerBot\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BushlanovDev\\MaxMessengerBot\\Laravel\\MaxBotServiceProvider"
+            ],
+            "aliases": {
+                "MaxBot": "BushlanovDev\\MaxMessengerBot\\Laravel\\MaxBotFacade"
+            }
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M",
+        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes src",
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "create-coverage-badge": [
+            "vendor/bin/phpunit --coverage-clover clover.xml",
+            "vendor/bin/php-coverage-badger --square clover.xml .github/badge-coverage.svg"
+        ]
+    }
+}

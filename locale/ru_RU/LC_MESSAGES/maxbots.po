@@ -1,0 +1,73 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2018-01-15T12:41:25+00:00\n"
+"PO-Revision-Date: 2018-04-03 12:34+0300\n"
+"Language: ru_RU\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+msgid "Main"
+msgstr "Главная"
+
+msgid "Plugins"
+msgstr "Плагины"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "General settings"
+msgstr "Общие настройки"
+
+msgid "Access denied"
+msgstr "Доступ запрещен"
+
+msgid "Plugin settings page"
+msgstr "Страница настроек плагина"
+
+msgid "Test"
+msgstr ""
+
+msgid "Platform for creating Max bots."
+msgstr "Платформа для создания ботов Max."
+
+msgid "Max bots"
+msgstr "Боты Max"
+
+msgid "Technical support for this app"
+msgstr "Техническая поддержка этого приложения"
+
+msgid "QR code"
+msgstr "QR-код"
+
+msgid "Scan the QR code or follow the link to contact support."
+msgstr "Отсканируйте QR-код или перейдите по ссылке для связи с поддержкой."
+
+msgid "Bots for your store"
+msgstr "Боты для вашего магазина"
+
+msgid "Connect Max bots to Shop-Script to notify customers about orders and promotions."
+msgstr "Подключите ботов Max к Shop-Script для уведомления покупателей о заказах и акциях."
+
+msgid "Notifications"
+msgstr "Уведомления"
+
+msgid "Instant notifications to customers and staff about new orders, tasks, and events."
+msgstr "Мгновенные уведомления клиентам и сотрудникам о новых заказах, задачах и событиях."
+
+msgid "Chat"
+msgstr "Чат"
+
+msgid "Communicate with customers directly in Max — receive and reply to messages from the backend."
+msgstr "Общайтесь с клиентами прямо в Max — принимайте и отвечайте на сообщения из бэкенда."
+
+msgid "Authorization"
+msgstr "Авторизация"
+
+msgid "Let customers log in to your site via Max — fast and without passwords."
+msgstr "Дайте клиентам войти на сайт через Max — быстро и без паролей."

@@ -1,0 +1,9 @@
+plugins/referral/
+plugins/assistant/
+plugins/taskbonus/
+plugins/queue/
+plugins/alphabet/
+plugins/ordermonitor/
+plugins/notifications/
+plugins/tgauth/
+agent.md

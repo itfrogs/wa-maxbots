@@ -1,0 +1,69 @@
+Аналоги и коллекции shop/plugins/analgin
+Ассистент telegram/plugins/assistant
+Авторизация через Telegram telegram/plugins/tgauth
+Боты Макс app/maxbots
+Боты Telegram app/telegram
+Вконтакте (Блог) blog/plugins/vkontakte
+Вконтакте (Магазин) shop/plugins/vkontakte
+Генератор товаров shop/plugins/generator
+Главная картинка blog/plugins/mainpic
+Движение товара shop/plugins/motion
+Загрузка прайсов поставщиков shop/plugins/getprice
+Заказы из tiu.ru shop/plugins/tiuru
+Заметки о клиенте shop/plugins/customernotes
+IP Телефония Novofon shop/plugins/novofon
+IP Телефония Novofon (CRM) crm/plugins/novofon
+IP Телефония Ростелеком shop/plugins/rostelecom
+IP Телефония Ростелеком (CRM) crm/plugins/rostelecom
+Instagram shop/plugins/instagram
+Картинка по умолчанию shop/plugins/defaultimage
+Коммерческое предложение shop/plugins/coffer
+Комплекты товаров shop/plugins/psets
+Список аналогов товара shop/plugins/analogs
+Скидки shop/plugins/discounts
+Скрытые цены shop/plugins/hiddenprices
+Магазин ВКонтакте shop/plugins/vkshop
+Маскировка товаров shop/plugins/hide
+Мигалка blog/plugins/flasher
+Мигалка photos/plugins/flasher
+Мигалка shop/plugins/flasher
+Мигалка site/plugins/flasher
+Мой Склад: Дополнения shop/plugins/sklad
+Награда за задание telegram/plugins/taskbonus
+Не покупатели contacts/plugins/notcustomers
+Объединение характеристик shop/plugins/combine
+Обрезка изображений shop/plugins/cropimage
+Обработчик формы обратной связи site/plugins/feedback
+Оптовые цены shop/plugins/opt
+Отправка заказов в Яндекс.Доставка shop/plugins/yaorder
+Печатные формы PDF shop/plugins/printforms
+Печатные формы PDF (CRM) crm/plugins/printforms
+Пирог shop/widgets/pie
+Подбор шин и дисков shop/plugins/tires
+Покупатели по типу contacts/plugins/bytype
+Поделиться корзиной shop/plugins/sharecart
+Поиск и добавление товаров в заказ shop/plugins/ordersearch
+Приглашения shop/plugins/invite
+Произвольные поля в заказе shop/plugins/customorderfields
+QR-код СБП Банка Открытие wa-plugins/payment/opensbp
+QR-код СБП Банка Точка wa-plugins/payment/tochkasbp
+Рахунок wa-plugins/payment/billua
+Синхронизация с alegria-realestate.com shop/plugins/alegria
+Синхронизация с komus-opt.ru shop/plugins/komus
+Синхронизация с Лемана ПРО (Leroy Merlin) shop/plugins/leroymerlin
+Синхронизация с Рельеф Центр shop/plugins/relefopt
+Синхронизация с VK blog/plugins/wall
+Синхронизация с www.sima-land.ru shop/plugins/sima
+Создание заказа через Excel shop/plugins/xlsorder
+Сразу в заказ shop/plugins/tocheckout
+Ссылка для фото photos/plugins/link
+Счёт wa-plugins/payment/bill
+Теги CRM helpdesk/plugins/crmtags
+Товарный чек как кассовый shop/plugins/tovcheck
+Twitter shop/plugins/twitter
+Тюнинг shop/plugins/tuning
+Уведомления и чат в Telegram telegram/plugins/notifications
+Фейсбук (Блог) blog/plugins/facebook
+Фейсбук (Магазин) shop/plugins/facebook
+Фотографии как товары shop/plugins/photogoods
+Цены из характеристик в заказе shop/plugins/orderprice

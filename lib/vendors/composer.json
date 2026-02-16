@@ -1,0 +1,10 @@
+{
+    "config": {
+        "platform": {
+            "php": "8.3"
+        }
+    },
+    "require": {
+        "bushlanov-dev/max-bot-api-client-php": "1.5.0"
+    }
+}
