@@ -23,6 +23,7 @@ use BushlanovDev\MaxMessengerBot\Enums\UploadType;
 use BushlanovDev\MaxMessengerBot\Models\MessageLink;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\CallbackButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\LinkButton;
+use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\OpenAppButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Reply\SendMessageButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Requests\InlineKeyboardAttachmentRequest;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Requests\ReplyKeyboardAttachmentRequest;
@@ -606,7 +607,7 @@ class maxbotsApi extends Api
                 foreach ($row as $button) {
                     $btnText = $button['text'] ?? '';
                     if (!empty($button['web_app']['url'])) {
-                        $maxRow[] = new LinkButton($btnText, $button['web_app']['url']);
+                        $maxRow[] = new OpenAppButton($btnText, $button['web_app']['url']);
                     } elseif (!empty($button['url'])) {
                         $maxRow[] = new LinkButton($btnText, $button['url']);
                     } else {

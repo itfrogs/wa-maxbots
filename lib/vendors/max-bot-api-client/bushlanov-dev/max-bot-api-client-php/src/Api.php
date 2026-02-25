@@ -341,7 +341,7 @@ class Api
      * @throws SerializationException
      */
     public function sendMessage(
-        int|array|null $userId = null,
+        ?int $userId = null,
         ?int $chatId = null,
         ?string $text = null,
         ?array $attachments = null,
@@ -350,16 +350,6 @@ class Api
         bool $notify = true,
         bool $disableLinkPreview = false,
     ): Message {
-        // Telegram-compatible array call: sendMessage(['chat_id' => ..., 'text' => ...])
-        if (is_array($userId)) {
-            $params = $userId;
-            $userId = isset($params['user_id']) ? (int)$params['user_id'] : null;
-            $chatId = isset($params['chat_id']) ? (int)$params['chat_id'] : null;
-            $text = $params['text'] ?? null;
-            $notify = empty($params['disable_notification']);
-            $disableLinkPreview = !empty($params['disable_link_preview']);
-        }
-
         $query = [
             'user_id' => $userId,
             'chat_id' => $chatId,
@@ -811,13 +801,8 @@ class Api
      * @throws ReflectionException
      * @throws SerializationException
      */
-    public function deleteMessage(string|array $messageId): Result
+    public function deleteMessage(string $messageId): Result
     {
-        // Telegram-compatible array call: deleteMessage(['chat_id' => ..., 'message_id' => '...'])
-        if (is_array($messageId)) {
-            $messageId = (string)($messageId['message_id'] ?? '');
-        }
-
         return $this->modelFactory->createResult(
             $this->client->request(
                 self::METHOD_DELETE,
