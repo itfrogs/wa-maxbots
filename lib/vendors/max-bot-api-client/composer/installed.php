@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '646955f77f2f728cc1d4bbe97c8b56ca0734f555',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '646955f77f2f728cc1d4bbe97c8b56ca0734f555',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -22,7 +22,7 @@
         'bushlanov-dev/max-bot-api-client-php' => array(
             'pretty_version' => '1.5.0',
             'version' => '1.5.0.0',
-            'reference' => '2a97a15889286a06f0c3e24c330eea96a4344e0f',
+            'reference' => '22c832f4a33117e050bfc52f6ba6ede7bd74badb',
             'type' => 'library',
             'install_path' => __DIR__ . '/../bushlanov-dev/max-bot-api-client-php',
             'aliases' => array(),

@@ -1,10 +1,20 @@
 {
     "config": {
         "platform": {
-            "php": "8.3"
-        }
+            "php": "8.2"
+        },
+        "vendor-dir": "max-bot-api-client"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "max-bot-api-client/bushlanov-dev/max-bot-api-client-php",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
     "require": {
-        "bushlanov-dev/max-bot-api-client-php": "1.5.0"
+        "bushlanov-dev/max-bot-api-client-php": "*"
     }
 }
