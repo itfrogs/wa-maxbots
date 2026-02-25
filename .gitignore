@@ -7,3 +7,5 @@ plugins/ordermonitor/
 plugins/notifications/
 plugins/tgauth/
 agent.md
+/.claude/
+/.work/
