@@ -606,11 +606,11 @@ class maxbotsApi extends Api
                 $maxRow = [];
                 foreach ($row as $button) {
                     $btnText = $button['text'] ?? '';
-                    if (!empty($button['open_app'])) {
-                        // Открываем мини-приложение бота (URL берётся из настроек MAX-платформы)
-                        $maxRow[] = new OpenAppButton($btnText);
+                    if (!empty($button['open_app']) && is_string($button['open_app'])) {
+                        // open_app с URL → открываем мини-приложение по URL
+                        $maxRow[] = new OpenAppButton($btnText, $button['open_app']);
                     } elseif (!empty($button['web_app']['url'])) {
-                        // Открываем конкретное мини-приложение по URL/username бота
+                        // web_app.url → открываем мини-приложение по URL
                         $maxRow[] = new OpenAppButton($btnText, $button['web_app']['url']);
                     } elseif (!empty($button['url'])) {
                         $maxRow[] = new LinkButton($btnText, $button['url']);
