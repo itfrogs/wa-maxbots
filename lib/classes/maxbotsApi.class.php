@@ -23,7 +23,6 @@ use BushlanovDev\MaxMessengerBot\Enums\UploadType;
 use BushlanovDev\MaxMessengerBot\Models\MessageLink;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\CallbackButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\LinkButton;
-use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\OpenAppButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Reply\SendMessageButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Requests\InlineKeyboardAttachmentRequest;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Requests\ReplyKeyboardAttachmentRequest;
@@ -606,13 +605,7 @@ class maxbotsApi extends Api
                 $maxRow = [];
                 foreach ($row as $button) {
                     $btnText = $button['text'] ?? '';
-                    if (!empty($button['open_app']) && is_string($button['open_app'])) {
-                        // open_app с URL → открываем мини-приложение по URL
-                        $maxRow[] = new OpenAppButton($btnText, $button['open_app']);
-                    } elseif (!empty($button['web_app']['url'])) {
-                        // web_app.url → открываем мини-приложение по URL
-                        $maxRow[] = new OpenAppButton($btnText, $button['web_app']['url']);
-                    } elseif (!empty($button['url'])) {
+                    if (!empty($button['url'])) {
                         $maxRow[] = new LinkButton($btnText, $button['url']);
                     } else {
                         $maxRow[] = new CallbackButton($btnText, $button['callback_data'] ?? '');
