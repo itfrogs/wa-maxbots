@@ -8,7 +8,7 @@ return array (
             24 => 'img/maxbots24.png',
             16 => 'img/maxbots16.png',
         ),
-    'version' => '1.0.2',
+    'version' => '1.0.3',
     'vendor' => '964801',
     'ui' => '2.0',
     'plugins' => true,
