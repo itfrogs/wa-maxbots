@@ -52,7 +52,7 @@ class Api
 
     public const API_VERSION = '1.2.5';
 
-    private const API_BASE_URL = 'https://platform-api.max.ru';
+    private const API_BASE_URL = 'https://platform-api2.max.ru';
 
     private const METHOD_GET = 'GET';
     private const METHOD_POST = 'POST';

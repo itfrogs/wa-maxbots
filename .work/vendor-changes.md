@@ -125,3 +125,20 @@ PHP загружает первое найденное определение и
 - public function log($level, string|\Stringable $message, array $context = []): void
 + public function log($level, $message, array $context = []): void
 ```
+
+---
+
+## Изменение 6 — миграция на новый домен API: platform-api2.max.ru
+
+**Причина:** Max меняет базовый URL API (дедлайн 19 июля), старый `platform-api.max.ru`
+выводится из эксплуатации. См. план `.work/max-new-api.md`.
+
+**Файл:** `src/Api.php:55`
+
+```diff
+- private const API_BASE_URL = 'https://platform-api.max.ru';
++ private const API_BASE_URL = 'https://platform-api2.max.ru';
+```
+
+`src/Laravel/MaxBotServiceProvider.php:79` (дефолт `base_url` для Laravel-интеграции) не тронут —
+maxbots не использует Laravel-обвязку вендора, только `Api` напрямую через `maxbotsApi extends Api`.

@@ -18,3 +18,4 @@ opencode.json
 /.github/
 /.work/
 /plugins/
+.DS_Store
