@@ -107,3 +107,21 @@ $bot->deleteMessage(['chat_id' => 123, 'message_id' => 'mid.123']);
       ...
   }
 ```
+
+---
+
+## Изменение 5 — psr/log: убран тип $message в NullLogger и LoggerTrait
+
+**Причина:** На сервере может быть загружена более старая копия `Psr\Log\LoggerInterface`
+(из Webasyst-ядра или другого приложения) с сигнатурой `log($level, $message, ...)` без union-типа.
+PHP загружает первое найденное определение интерфейса, и тогда наш `NullLogger` с `string|\Stringable $message`
+не совместим с ним → Fatal error.
+
+**Файлы:**
+- `psr/log/src/NullLogger.php:22`
+- `psr/log/src/LoggerTrait.php:97`
+
+```diff
+- public function log($level, string|\Stringable $message, array $context = []): void
++ public function log($level, $message, array $context = []): void
+```
