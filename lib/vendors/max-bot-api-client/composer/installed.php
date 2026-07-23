@@ -20,8 +20,8 @@
             'dev_requirement' => false,
         ),
         'bushlanov-dev/max-bot-api-client-php' => array(
-            'pretty_version' => '1.5.0',
-            'version' => '1.5.0.0',
+            'pretty_version' => '1.6.5',
+            'version' => '1.6.5.0',
             'reference' => '22c832f4a33117e050bfc52f6ba6ede7bd74badb',
             'type' => 'library',
             'install_path' => __DIR__ . '/../bushlanov-dev/max-bot-api-client-php',

@@ -2,8 +2,8 @@
     "packages": [
         {
             "name": "bushlanov-dev/max-bot-api-client-php",
-            "version": "1.5.0",
-            "version_normalized": "1.5.0.0",
+            "version": "1.6.5",
+            "version_normalized": "1.6.5.0",
             "dist": {
                 "type": "path",
                 "url": "max-bot-api-client/bushlanov-dev/max-bot-api-client-php",

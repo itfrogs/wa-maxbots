@@ -19,3 +19,4 @@ opencode.json
 /.work/
 /plugins/
 .DS_Store
+/.gortex/

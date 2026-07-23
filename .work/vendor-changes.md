@@ -142,3 +142,63 @@ PHP загружает первое найденное определение и
 
 `src/Laravel/MaxBotServiceProvider.php:79` (дефолт `base_url` для Laravel-интеграции) не тронут —
 maxbots не использует Laravel-обвязку вендора, только `Api` напрямую через `maxbotsApi extends Api`.
+
+---
+
+## ⚠️ Уточнение по изменениям 3 и 4 (важно, проверено 2026-07-23)
+
+Сверка с реальным закоммиченным кодом показала, что **патчи 3 и 4, как они были описаны выше,
+никогда не были применены к вендорному `Api.php`** — сигнатуры там всегда были обычные
+(`sendMessage(?int $userId, ...)`, `deleteMessage(string $messageId)`). Telegram-совместимость для
+`sendMessage` реализована **только на уровне `maxbotsApi::sendMessage()`** (в `lib/classes/maxbotsApi.class.php`) —
+он сам разбирает Telegram-массив и вызывает `parent::sendMessage()` уже с обычным `int $userId`. Поскольку
+PHP всегда резолвит вызов метода по реальному классу объекта, а не по объявленному типу переменной,
+патч на уровне вендора для `sendMessage` был бы просто мёртвым кодом — его убрали при обновлении на 1.6.5.
+
+`deleteMessage` вообще не переопределён в `maxbotsApi.class.php` — Telegram-style
+`deleteMessage(['message_id' => ...])` **не поддерживается фактически**, несмотря на то что
+README.md/CLAUDE.md это заявляют. Не патчено при обновлении на 1.6.5 (сохранено поведение как было —
+задача не в том, чтобы "починить", а в том, чтобы не сломать то, что реально работает).
+
+---
+
+## Изменение 7 — обновление вендора 1.5.0 → 1.6.5
+
+**Причина:** У автора вышло 6 релизов после 1.5.0, включая официальный фикс миграции на
+`platform-api2.max.ru` (1.6.4) и расширение допустимых версий `psr/log` (1.6.2). Плюс новые
+enum-значения и типы кнопок.
+
+**Что изменилось у автора (безопасно, аддитивно):**
+- `platform-api2.max.ru` теперь прошито в самой библиотеке (наш патч №6 дублирует то же самое —
+  оставлен как есть, безвредно).
+- `psr/log` в `require` расширен на `^1.1||^2.0||^3.0` (было только `^3.0`) — у нас vendored-копия
+  psr/log не пересобиралась, патч №5 (`NullLogger`/`LoggerTrait`) оставлен как есть, актуален.
+- Новый тип кнопки `ClipboardButton` (`InlineButtonType::Clipboard`).
+- Новые права `ChatAdminPermission`: `CanCall`, `PostEditDeleteMessage`, `EditMessage`, `DeleteMessage`.
+- `OpenAppButton` — новый необязательный параметр `$payload` (initData мини-приложения).
+
+**⚠️ Важное расхождение — пришлось вручную восстановить:** в 1.6.0 автор удалил классы
+`ReplyKeyboardAttachment`, `ReplyKeyboardAttachmentRequest`, `ReplyKeyboardAttachmentRequestPayload`,
+`DataAttachment` и убрал `AttachmentType::ReplyKeyboard` / `AttachmentType::Data` — а наш
+`maxbotsApi::convertReplyMarkup()` использует `ReplyKeyboardAttachmentRequest` для Telegram-style
+`reply_markup.keyboard` (обычная, не inline, клавиатура). Без этого обновление сломало бы обычные
+reply-клавиатуры фатальной ошибкой "Class not found".
+
+**Восстановлено вручную (файлы скопированы из версии 1.5.0, без изменений):**
+- `src/Models/Attachments/DataAttachment.php`
+- `src/Models/Attachments/ReplyKeyboardAttachment.php`
+- `src/Models/Attachments/Requests/ReplyKeyboardAttachmentRequest.php`
+- `src/Models/Attachments/Payloads/ReplyKeyboardAttachmentRequestPayload.php`
+
+**Патч добавлен вручную (в новый код 1.6.5, тех же двух мест уже нет у автора):**
+- `src/Enums/AttachmentType.php` — возвращены `case ReplyKeyboard = 'reply_keyboard';` и `case Data = 'data';`
+- `src/ModelFactory.php` — возвращена обработка `reply_keyboard`-кнопок и match-ветки
+  `AttachmentType::ReplyKeyboard => ReplyKeyboardAttachment::fromArray($data)` /
+  `AttachmentType::Data => DataAttachment::fromArray($data)`
+
+**Проверено:** синтаксис (`php -l`) всех тронутых файлов + сквозной smoke-тест (инстанцирование `Api`,
+`ModelFactory::createAttachment()` для `reply_keyboard`/`data`, построение `ReplyKeyboardAttachmentRequest`,
+и `maxbotsApi::convertReplyMarkup()` целиком — все ветки кнопок дают ожидаемые классы).
+
+**Если вендор обновится снова:** проверить заново, не появились ли `ReplyKeyboardAttachment*`/`DataAttachment`
+у автора (тогда наши файлы можно будет убрать), и повторить это же ручное восстановление, если всё ещё нет.

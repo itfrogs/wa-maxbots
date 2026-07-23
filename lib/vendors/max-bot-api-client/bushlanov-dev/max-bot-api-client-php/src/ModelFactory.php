@@ -14,6 +14,7 @@ use BushlanovDev\MaxMessengerBot\Models\Attachments\AudioAttachment;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\AbstractInlineButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\CallbackButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\ChatButton;
+use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\ClipboardButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\LinkButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\MessageButton;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\Buttons\Inline\OpenAppButton;
@@ -259,8 +260,6 @@ readonly class ModelFactory
         }
 
         return match ($attachmentType) {
-            AttachmentType::Data => DataAttachment::fromArray($data),
-            AttachmentType::Share => ShareAttachment::fromArray($data),
             AttachmentType::Image => PhotoAttachment::fromArray($data),
             AttachmentType::Video => VideoAttachment::fromArray($data),
             AttachmentType::Audio => AudioAttachment::fromArray($data),
@@ -270,6 +269,8 @@ readonly class ModelFactory
             AttachmentType::InlineKeyboard => InlineKeyboardAttachment::fromArray($data),
             AttachmentType::ReplyKeyboard => ReplyKeyboardAttachment::fromArray($data),
             AttachmentType::Location => LocationAttachment::fromArray($data),
+            AttachmentType::Share => ShareAttachment::fromArray($data),
+            AttachmentType::Data => DataAttachment::fromArray($data),
             default => throw new LogicException('Unknown or unsupported attachment type: ' . ($data['type'] ?? 'none')),
         };
     }
@@ -312,6 +313,7 @@ readonly class ModelFactory
             InlineButtonType::RequestGeoLocation => RequestGeoLocationButton::fromArray($data),
             InlineButtonType::Chat => ChatButton::fromArray($data),
             InlineButtonType::OpenApp => OpenAppButton::fromArray($data),
+            InlineButtonType::Clipboard => ClipboardButton::fromArray($data),
             InlineButtonType::Message => MessageButton::fromArray($data),
             default => throw new LogicException(
                 'Unknown or unsupported inline button type: ' . ($data['type'] ?? 'none')

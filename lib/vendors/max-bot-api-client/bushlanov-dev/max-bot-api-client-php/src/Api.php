@@ -48,7 +48,7 @@ use RuntimeException;
  */
 class Api
 {
-    public const LIBRARY_VERSION = '1.5.0';
+    public const LIBRARY_VERSION = '1.6.5';
 
     public const API_VERSION = '1.2.5';
 

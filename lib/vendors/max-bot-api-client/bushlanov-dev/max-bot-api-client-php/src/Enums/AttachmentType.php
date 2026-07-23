@@ -13,8 +13,8 @@ enum AttachmentType: string
     case Sticker = 'sticker';
     case Contact = 'contact';
     case InlineKeyboard = 'inline_keyboard';
-    case ReplyKeyboard = 'reply_keyboard';
     case Location = 'location';
     case Share = 'share';
+    case ReplyKeyboard = 'reply_keyboard';
     case Data = 'data';
 }
