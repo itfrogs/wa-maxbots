@@ -7,7 +7,7 @@
  */
 
 /*
- * Подключаем вендора https://packagist.org/packages/bushlanov-dev/max-bot-api-client-php#1.5.0
+ * Подключаем вендора https://packagist.org/packages/bushlanov-dev/max-bot-api-client-php#1.8.0
  */
 
 if (PHP_VERSION_ID >= 80200) {

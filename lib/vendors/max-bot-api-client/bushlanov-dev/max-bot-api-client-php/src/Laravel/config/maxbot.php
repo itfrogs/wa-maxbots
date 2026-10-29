@@ -36,7 +36,7 @@ return [
     | Configuration for the Max Bot API connection.
     |
     */
-    'base_url' => env('MAXBOT_BASE_URL', 'https://botapi.max.ru'),
+    'base_url' => env('MAXBOT_BASE_URL', \BushlanovDev\MaxMessengerBot\Api::API_BASE_URL),
     'api_version' => env('MAXBOT_API_VERSION'),
 
     /*
@@ -54,16 +54,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Long Polling Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Timeout in seconds for the long polling getUpdates call (0-90).
+    | Used by the maxbot:polling:start command when no --timeout option
+    | is passed.
+    |
+    */
+    'polling' => [
+        'timeout' => (int)env('MAXBOT_POLLING_TIMEOUT', 90),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Logging Configuration
     |--------------------------------------------------------------------------
     |
     | Whether to enable detailed logging of API requests and responses.
-    | This uses Laravel's configured logger.
+    | When `channel` is set, logs are sent to that channel from your
+    | config/logging.php; otherwise the default application logger is used.
     |
     */
     'logging' => [
         'enabled' => (bool)env('MAXBOT_LOGGING_ENABLED', false),
-        'level' => env('MAXBOT_LOGGING_LEVEL', 'debug'),
+        'channel' => env('MAXBOT_LOGGING_CHANNEL'),
     ],
 ];
 // @codeCoverageIgnoreEnd

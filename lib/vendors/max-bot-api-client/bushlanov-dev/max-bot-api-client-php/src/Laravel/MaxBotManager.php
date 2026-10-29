@@ -112,15 +112,19 @@ readonly class MaxBotManager
      * This method should be called from a Laravel command or job.
      * It will run indefinitely until stopped.
      *
+     * @param int $timeout
+     * @param int|null $marker
+     * @param UpdateType[]|null $types Update types to fetch, null for all.
+     *
      * @throws BindingResolutionException
      * @codeCoverageIgnore
      */
-    public function startLongPolling(int $timeout = 90, ?int $marker = null): void
+    public function startLongPolling(int $timeout = 90, ?int $marker = null, ?array $types = null): void
     {
         /** @var LongPollingHandler $longPolling */
         $longPolling = $this->container->make(LongPollingHandler::class);
 
-        $longPolling->handle($timeout, $marker);
+        $longPolling->handle($timeout, $marker, $types);
     }
 
     /**
@@ -349,6 +353,8 @@ readonly class MaxBotManager
     /**
      * Register a message chat created handler.
      *
+     * @deprecated message_chat_created is not in the Bot API schema since 0.0.33.
+     *
      * @param callable|string $handler Can be a closure, callable, or Laravel container binding.
      *
      * @throws BindingResolutionException
@@ -357,6 +363,58 @@ readonly class MaxBotManager
     public function onMessageChatCreated(callable|string $handler): void
     {
         $this->dispatcher->onMessageChatCreated($this->resolveHandler($handler));
+    }
+
+    /**
+     * Register a comment created handler.
+     *
+     * @param callable|string $handler Can be a closure, callable, or Laravel container binding.
+     *
+     * @throws BindingResolutionException
+     * @codeCoverageIgnore
+     */
+    public function onCommentCreated(callable|string $handler): void
+    {
+        $this->dispatcher->onCommentCreated($this->resolveHandler($handler));
+    }
+
+    /**
+     * Register a comment edited handler.
+     *
+     * @param callable|string $handler Can be a closure, callable, or Laravel container binding.
+     *
+     * @throws BindingResolutionException
+     * @codeCoverageIgnore
+     */
+    public function onCommentEdited(callable|string $handler): void
+    {
+        $this->dispatcher->onCommentEdited($this->resolveHandler($handler));
+    }
+
+    /**
+     * Register a comment removed handler.
+     *
+     * @param callable|string $handler Can be a closure, callable, or Laravel container binding.
+     *
+     * @throws BindingResolutionException
+     * @codeCoverageIgnore
+     */
+    public function onCommentRemoved(callable|string $handler): void
+    {
+        $this->dispatcher->onCommentRemoved($this->resolveHandler($handler));
+    }
+
+    /**
+     * Register a bot admin permissions changed handler.
+     *
+     * @param callable|string $handler Can be a closure, callable, or Laravel container binding.
+     *
+     * @throws BindingResolutionException
+     * @codeCoverageIgnore
+     */
+    public function onBotAdminPermissionsChanged(callable|string $handler): void
+    {
+        $this->dispatcher->onBotAdminPermissionsChanged($this->resolveHandler($handler));
     }
 
     /**

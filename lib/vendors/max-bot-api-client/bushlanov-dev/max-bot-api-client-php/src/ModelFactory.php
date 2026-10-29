@@ -34,17 +34,21 @@ use BushlanovDev\MaxMessengerBot\Models\Attachments\ReplyKeyboardAttachment;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\ShareAttachment;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\StickerAttachment;
 use BushlanovDev\MaxMessengerBot\Models\Attachments\VideoAttachment;
+use BushlanovDev\MaxMessengerBot\Models\BotCommandsInfo;
 use BushlanovDev\MaxMessengerBot\Models\BotInfo;
 use BushlanovDev\MaxMessengerBot\Models\Chat;
 use BushlanovDev\MaxMessengerBot\Models\ChatList;
 use BushlanovDev\MaxMessengerBot\Models\ChatMember;
 use BushlanovDev\MaxMessengerBot\Models\ChatMembersList;
+use BushlanovDev\MaxMessengerBot\Models\CommentMessage;
+use BushlanovDev\MaxMessengerBot\Models\CommentMessageBody;
 use BushlanovDev\MaxMessengerBot\Models\Markup\AbstractMarkup;
 use BushlanovDev\MaxMessengerBot\Models\Markup\EmphasizedMarkup;
 use BushlanovDev\MaxMessengerBot\Models\Markup\HeadingMarkup;
 use BushlanovDev\MaxMessengerBot\Models\Markup\HighlightedMarkup;
 use BushlanovDev\MaxMessengerBot\Models\Markup\LinkMarkup;
 use BushlanovDev\MaxMessengerBot\Models\Markup\MonospacedMarkup;
+use BushlanovDev\MaxMessengerBot\Models\Markup\QuoteMarkup;
 use BushlanovDev\MaxMessengerBot\Models\Markup\StrikethroughMarkup;
 use BushlanovDev\MaxMessengerBot\Models\Markup\StrongMarkup;
 use BushlanovDev\MaxMessengerBot\Models\Markup\UnderlineMarkup;
@@ -58,8 +62,12 @@ use BushlanovDev\MaxMessengerBot\Models\Updates\AbstractUpdate;
 use BushlanovDev\MaxMessengerBot\Models\Updates\BotAddedToChatUpdate;
 use BushlanovDev\MaxMessengerBot\Models\Updates\BotRemovedFromChatUpdate;
 use BushlanovDev\MaxMessengerBot\Models\Updates\BotStartedUpdate;
+use BushlanovDev\MaxMessengerBot\Models\Updates\BotAdminPermissionsChangedUpdate;
 use BushlanovDev\MaxMessengerBot\Models\Updates\BotStoppedUpdate;
 use BushlanovDev\MaxMessengerBot\Models\Updates\ChatTitleChangedUpdate;
+use BushlanovDev\MaxMessengerBot\Models\Updates\CommentCreatedUpdate;
+use BushlanovDev\MaxMessengerBot\Models\Updates\CommentEditedUpdate;
+use BushlanovDev\MaxMessengerBot\Models\Updates\CommentRemovedUpdate;
 use BushlanovDev\MaxMessengerBot\Models\Updates\DialogClearedUpdate;
 use BushlanovDev\MaxMessengerBot\Models\Updates\DialogMutedUpdate;
 use BushlanovDev\MaxMessengerBot\Models\Updates\DialogRemovedUpdate;
@@ -77,6 +85,8 @@ use LogicException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use ReflectionException;
+use TypeError;
+use ValueError;
 
 /**
  * Creates DTOs from raw associative arrays returned by the API client.
@@ -104,6 +114,19 @@ readonly class ModelFactory
     public function createResult(array $data): Result
     {
         return Result::fromArray($data);
+    }
+
+    /**
+     * Commands of the current bot.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return BotCommandsInfo
+     * @throws ReflectionException
+     */
+    public function createBotCommandsInfo(array $data): BotCommandsInfo
+    {
+        return BotCommandsInfo::fromArray($data);
     }
 
     /**
@@ -203,6 +226,74 @@ readonly class ModelFactory
         return isset($data['messages']) && is_array($data['messages'])
             ? array_map([$this, 'createMessage'], $data['messages'])
             : [];
+    }
+
+    /**
+     * Comment to a post in a channel.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return CommentMessage
+     * @throws ReflectionException
+     */
+    public function createCommentMessage(array $data): CommentMessage
+    {
+        if (isset($data['body']) && is_array($data['body'])) {
+            $data['body'] = $this->createCommentMessageBody($data['body']);
+        }
+
+        if (isset($data['link']['message']) && is_array($data['link']['message'])) {
+            $data['link']['message'] = $this->createCommentMessageBody($data['link']['message']);
+        }
+
+        return CommentMessage::fromArray($data);
+    }
+
+    /**
+     * List of comments.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return CommentMessage[]
+     */
+    public function createCommentMessages(array $data): array
+    {
+        return isset($data['messages']) && is_array($data['messages'])
+            ? array_map([$this, 'createCommentMessage'], $data['messages'])
+            : [];
+    }
+
+    /**
+     * Creates a CommentMessage from the response of the sendComment endpoint.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return CommentMessage
+     * @throws ReflectionException
+     */
+    public function createCommentMessageFromSendResponse(array $data): CommentMessage
+    {
+        return $this->createCommentMessage($data['message']);
+    }
+
+    /**
+     * Creates a CommentMessageBody from raw API data, handling polymorphic markup.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return CommentMessageBody
+     * @throws ReflectionException
+     */
+    private function createCommentMessageBody(array $data): CommentMessageBody
+    {
+        if (isset($data['markup']) && is_array($data['markup'])) {
+            $data['markup'] = array_map(
+                [$this, 'createMarkupElement'],
+                $data['markup'],
+            );
+        }
+
+        return CommentMessageBody::fromArray($data);
     }
 
     /**
@@ -379,35 +470,62 @@ readonly class ModelFactory
     /**
      * Creates a specific Update model based on the 'update_type' field.
      *
-     * @param array<string, mixed> $data Raw data for a single update.
+     * @param mixed $data Raw data for a single update. Anything that is not an array
+     *                    (e.g. a scalar produced by json_decode) is converted to LogicException,
+     *                    so a webhook or a long-polling loop can skip it instead of crashing.
      *
      * @return AbstractUpdate
      * @throws ReflectionException
      * @throws LogicException
      */
-    public function createUpdate(array $data): AbstractUpdate
+    public function createUpdate(mixed $data): AbstractUpdate
     {
-        return match (UpdateType::tryFrom($data['update_type'] ?? '')) {
-            UpdateType::MessageCreated => MessageCreatedUpdate::fromArray($data),
-            UpdateType::MessageCallback => MessageCallbackUpdate::fromArray($data),
-            UpdateType::MessageEdited => MessageEditedUpdate::fromArray($data),
-            UpdateType::MessageRemoved => MessageRemovedUpdate::fromArray($data),
-            UpdateType::BotAdded => BotAddedToChatUpdate::fromArray($data),
-            UpdateType::BotRemoved => BotRemovedFromChatUpdate::fromArray($data),
-            UpdateType::DialogMuted => DialogMutedUpdate::fromArray($data),
-            UpdateType::DialogUnmuted => DialogUnmutedUpdate::fromArray($data),
-            UpdateType::DialogCleared => DialogClearedUpdate::fromArray($data),
-            UpdateType::DialogRemoved => DialogRemovedUpdate::fromArray($data),
-            UpdateType::UserAdded => UserAddedToChatUpdate::fromArray($data),
-            UpdateType::UserRemoved => UserRemovedFromChatUpdate::fromArray($data),
-            UpdateType::BotStarted => BotStartedUpdate::fromArray($data),
-            UpdateType::BotStopped => BotStoppedUpdate::fromArray($data),
-            UpdateType::ChatTitleChanged => ChatTitleChangedUpdate::fromArray($data),
-            UpdateType::MessageChatCreated => MessageChatCreatedUpdate::fromArray($data),
-            default => throw new LogicException(
-                'Unknown or unsupported update type received: ' . ($data['update_type'] ?? 'none')
-            ),
-        };
+        if (!is_array($data)) {
+            $message = sprintf('Failed to parse update: expected JSON object, got %s', get_debug_type($data));
+            $this->logger->warning($message, ['payload' => $data]);
+
+            throw new LogicException($message);
+        }
+
+        try {
+            return match (UpdateType::tryFrom($data['update_type'] ?? '')) {
+                UpdateType::MessageCreated => MessageCreatedUpdate::fromArray($data),
+                UpdateType::MessageCallback => MessageCallbackUpdate::fromArray($data),
+                UpdateType::MessageEdited => MessageEditedUpdate::fromArray($data),
+                UpdateType::MessageRemoved => MessageRemovedUpdate::fromArray($data),
+                UpdateType::BotAdded => BotAddedToChatUpdate::fromArray($data),
+                UpdateType::BotRemoved => BotRemovedFromChatUpdate::fromArray($data),
+                UpdateType::DialogMuted => DialogMutedUpdate::fromArray($data),
+                UpdateType::DialogUnmuted => DialogUnmutedUpdate::fromArray($data),
+                UpdateType::DialogCleared => DialogClearedUpdate::fromArray($data),
+                UpdateType::DialogRemoved => DialogRemovedUpdate::fromArray($data),
+                UpdateType::UserAdded => UserAddedToChatUpdate::fromArray($data),
+                UpdateType::UserRemoved => UserRemovedFromChatUpdate::fromArray($data),
+                UpdateType::BotStarted => BotStartedUpdate::fromArray($data),
+                UpdateType::BotStopped => BotStoppedUpdate::fromArray($data),
+                UpdateType::ChatTitleChanged => ChatTitleChangedUpdate::fromArray($data),
+                UpdateType::MessageChatCreated => MessageChatCreatedUpdate::fromArray($data),
+                UpdateType::CommentCreated => CommentCreatedUpdate::fromArray($data),
+                UpdateType::CommentEdited => CommentEditedUpdate::fromArray($data),
+                UpdateType::CommentRemoved => CommentRemovedUpdate::fromArray($data),
+                UpdateType::BotAdminPermissionChanged => BotAdminPermissionsChangedUpdate::fromArray($data),
+                default => throw new LogicException(
+                    'Unknown or unsupported update type received: ' . ($data['update_type'] ?? 'none')
+                ),
+            };
+        } catch (TypeError|ValueError $e) {
+            // The update type is known, but its payload does not fit the model: the API has
+            // changed a field. Skip it like an unsupported update, so a webhook or a long-polling
+            // loop does not stop on it, but log it louder.
+            $message = sprintf(
+                'Failed to parse update of type %s: %s',
+                is_string($data['update_type'] ?? null) ? $data['update_type'] : 'none',
+                $e->getMessage(),
+            );
+            $this->logger->warning($message, ['payload' => $data, 'exception' => $e]);
+
+            throw new LogicException($message, 0, $e);
+        }
     }
 
     /**
@@ -480,6 +598,7 @@ readonly class ModelFactory
             MarkupType::Underline => UnderlineMarkup::fromArray($data),
             MarkupType::Heading => HeadingMarkup::fromArray($data),
             MarkupType::Highlighted => HighlightedMarkup::fromArray($data),
+            MarkupType::Quote => QuoteMarkup::fromArray($data),
             MarkupType::Link => LinkMarkup::fromArray($data),
             MarkupType::UserMention => UserMentionMarkup::fromArray($data),
             default => throw new LogicException(
